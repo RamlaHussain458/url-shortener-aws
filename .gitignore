@@ -1,0 +1,25 @@
+# Build output
+target/
+*.jar
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Secrets and local config (NEVER commit these)
+.env
+*.pem
+*.key
+
+# Terraform (used later)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+crash.log
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: url-shortener
+  config:
+    # Lets you run the app from IntelliJ using the same .env file that docker compose uses.
+    # Both locations are listed so it works whether the working directory is the repository
+    # root or the backend folder. The files are optional: inside Docker, real environment
+    # variables are used instead.
+    import: "optional:file:./.env[.properties],optional:file:../.env[.properties]"
+  datasource:
+    url: "${DB_URL:jdbc:mysql://localhost:3307/${DB_NAME:urlshortener}}"
+    username: "${DB_USER:urlshortener}"
+    # No default on purpose: the app refuses to start without a password.
+    password: "${DB_PASSWORD}"
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate   # Flyway owns the schema, Hibernate only checks it matches
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+server:
+  port: 8080
+  shutdown: graceful
+  # Set to "native" when running behind a trusted reverse proxy so client IPs are read from X-Forwarded-For.
+  forward-headers-strategy: "${FORWARD_HEADERS_STRATEGY:none}"
+  error:
+    include-message: never
+    include-stacktrace: never
+    include-binding-errors: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+
+app:
+  base-url: "${APP_BASE_URL:http://localhost:8080}"
+  short-code:
+    length: 7
+    max-attempts: 5
+  cache:
+    max-entries: 10000
+  rate-limit:
+    enabled: true
+    create-capacity: 10
+    create-refill-per-second: 0.2
+    redirect-capacity: 120
+    redirect-refill-per-second: 2.0
+    max-tracked-clients: 10000

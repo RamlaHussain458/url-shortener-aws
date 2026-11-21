@@ -1,0 +1,8 @@
+# Used by integration tests. The database itself comes from Testcontainers (@ServiceConnection).
+spring:
+  datasource:
+    password: test-only
+app:
+  rate-limit:
+    create-capacity: 1000
+    redirect-capacity: 1000

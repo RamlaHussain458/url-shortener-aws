@@ -6,6 +6,8 @@
 ![MySQL](https://img.shields.io/badge/MySQL-8.4-4479A1)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED)
 
+![Screenshot of the URL shortener](docs/images/app-screenshot.png)
+
 A secure URL shortener built with Spring Boot and MySQL. It turns long URLs into short links and redirects visitors to the original address.
 
 The application is intentionally small. The goal of this project is to take a compact service through a full engineering lifecycle: clean design, security, automated tests, containers, CI, and (in progress) infrastructure as code and deployment on AWS within a student free tier budget.

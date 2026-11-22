@@ -241,7 +241,7 @@ mvn verify
 
 - Unit tests cover the code generator, LRU cache, rate limiter, URL validator and the service logic (including collision retries).
 - Integration tests start a real MySQL 8.4 container with Testcontainers and test the API end to end: creating and resolving links, validation errors, security headers, rate limiting and database constraints.
-- Docker must be running for the integration tests. Without Docker they are skipped.
+- Docker must be running for the integration tests. Without Docker they fail at startup.
 
 The same build runs automatically on GitHub Actions for every push and pull request.
 

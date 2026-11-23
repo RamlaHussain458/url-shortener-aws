@@ -14,5 +14,6 @@
 | [0003](adr/0003-free-tier-aws-architecture.md) | Low-cost AWS architecture for a student account | Accepted, implementation planned |
 | [0004](adr/0004-singleton-testcontainer.md) | One shared MySQL Testcontainer for all integration tests | Accepted |
 | [0005](adr/0005-frontend-behind-nginx.md) | React frontend served by nginx with a reverse proxy | Accepted |
+| [0006](adr/0006-terraform-remote-state-in-s3.md) | Terraform remote state in S3 with native locking | Accepted |
 
 The architecture diagrams are in the main [README](../README.md).

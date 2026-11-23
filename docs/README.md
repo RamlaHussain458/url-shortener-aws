@@ -15,5 +15,6 @@
 | [0004](adr/0004-singleton-testcontainer.md) | One shared MySQL Testcontainer for all integration tests | Accepted |
 | [0005](adr/0005-frontend-behind-nginx.md) | React frontend served by nginx with a reverse proxy | Accepted |
 | [0006](adr/0006-terraform-remote-state-in-s3.md) | Terraform remote state in S3 with native locking | Accepted |
+| [0007](adr/0007-network-design.md) | Public web subnet, private database subnets, no NAT gateway | Accepted |
 
 The architecture diagrams are in the main [README](../README.md).

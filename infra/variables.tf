@@ -27,3 +27,39 @@ variable "private_subnet_cidrs" {
   type        = list(string)
   default     = ["10.0.10.0/24", "10.0.11.0/24"]
 }
+
+variable "instance_type" {
+  description = "EC2 instance type for the web server. t3.small has 2 GiB of memory, t3.micro has 1 GiB and costs less."
+  type        = string
+  default     = "t3.small"
+}
+
+variable "db_instance_class" {
+  description = "RDS instance class for the MySQL database."
+  type        = string
+  default     = "db.t4g.micro"
+}
+
+variable "db_allocated_storage" {
+  description = "Database storage in GiB."
+  type        = number
+  default     = 20
+}
+
+variable "db_name" {
+  description = "Name of the MySQL database created inside the RDS instance."
+  type        = string
+  default     = "urlshortener"
+}
+
+variable "db_username" {
+  description = "Database user the application connects as."
+  type        = string
+  default     = "urlshortener"
+}
+
+variable "ecr_images_to_keep" {
+  description = "Number of most recent images kept in each container registry."
+  type        = number
+  default     = 5
+}

@@ -19,6 +19,7 @@ target/
 *.tfstate.*
 *.tfvars
 crash.log
+*.tfplan
 
 # OS
 .DS_Store

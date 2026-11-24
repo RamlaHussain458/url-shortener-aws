@@ -42,3 +42,20 @@ terraform destroy    # remove everything Terraform created
 ```
 
 Commit `.terraform.lock.hcl`. Never commit `.terraform/`, `*.tfstate` or `*.tfvars`. The root `.gitignore` already excludes them.
+
+## Cost control
+
+The network, security groups, container registries and parameters cost nothing. The server, the
+database and the public IP address cost money for every hour they exist. While working, remove
+only the expensive parts at the end of a session and bring them back at the start of the next one:
+
+```powershell
+# End of a session: remove the server, its IP address and the database
+terraform destroy -target=aws_instance.web -target=aws_eip.web -target=aws_db_instance.main
+
+# Start of the next session: recreate whatever is missing
+terraform apply
+```
+
+At the very end of the project, run a plain `terraform destroy` to remove everything. The state
+bucket is not managed by Terraform and has to be deleted by hand.

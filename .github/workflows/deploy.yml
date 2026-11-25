@@ -1,0 +1,103 @@
+name: Deploy
+
+# Runs when a release is published, or by hand from the Actions tab.
+# The AWS infrastructure must be running (terraform apply) or the deploy step stops with a clear message.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: ap-south-1
+  PROJECT: url-shortener
+
+jobs:
+  deploy:
+    name: Build, push and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sign in to AWS with OIDC (no stored access keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push images
+        id: images
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_SHA::7}"
+          for name in backend web; do
+            IMAGE="${REGISTRY}/${PROJECT}-${name}:${TAG}"
+            if aws ecr describe-images --repository-name "${PROJECT}-${name}" --image-ids imageTag="${TAG}" > /dev/null 2>&1; then
+              echo "Image ${PROJECT}-${name}:${TAG} already exists, skipping the build"
+            else
+              docker build -t "${IMAGE}" "./${name}"
+              docker push "${IMAGE}"
+            fi
+          done
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy on the server through Systems Manager
+        env:
+          TAG: ${{ steps.images.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          SERVERS="$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=${PROJECT}-web" "Name=instance-state-name,Values=running" \
+            --query 'Reservations[].Instances[].[InstanceId,PublicIpAddress]' --output text)"
+          if [ -z "${SERVERS}" ] || [ "$(printf '%s\n' "${SERVERS}" | wc -l)" -ne 1 ]; then
+            echo "::error::Expected exactly one running server named ${PROJECT}-web. Run terraform apply, wait a few minutes, then run this workflow again."
+            exit 1
+          fi
+          read -r INSTANCE_ID PUBLIC_IP <<< "${SERVERS}"
+
+          # The server runs the exact deploy script from this commit, not whatever is on a branch.
+          COMMAND="cd /tmp && curl -fsSL https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/deploy/deploy.sh -o deploy.sh && IMAGE_TAG=${TAG} REF=${GITHUB_SHA} REPO=${GITHUB_REPOSITORY} bash deploy.sh"
+          jq -n --arg cmd "${COMMAND}" '{commands: [$cmd]}' > params.json
+
+          COMMAND_ID="$(aws ssm send-command \
+            --instance-ids "${INSTANCE_ID}" \
+            --document-name AWS-RunShellScript \
+            --comment "Deploy ${TAG}" \
+            --parameters file://params.json \
+            --query Command.CommandId --output text)"
+
+          STATUS="Pending"
+          for _ in $(seq 1 60); do
+            STATUS="$(aws ssm get-command-invocation --command-id "${COMMAND_ID}" --instance-id "${INSTANCE_ID}" \
+              --query Status --output text 2> /dev/null || echo Pending)"
+            case "${STATUS}" in
+              Pending | InProgress | Delayed) sleep 10 ;;
+              *) break ;;
+            esac
+          done
+
+          echo "----- Output from the server -----"
+          aws ssm get-command-invocation --command-id "${COMMAND_ID}" --instance-id "${INSTANCE_ID}" \
+            --query '[StandardOutputContent,StandardErrorContent]' --output text || true
+
+          if [ "${STATUS}" != "Success" ]; then
+            echo "::error::The deployment finished with status ${STATUS}"
+            exit 1
+          fi
+
+          curl -fsS --retry 5 --retry-delay 3 --retry-connrefused -o /dev/null "http://${PUBLIC_IP}/"
+          echo "Deployed image tag ${TAG}. The site answered on its public address." >> "$GITHUB_STEP_SUMMARY"

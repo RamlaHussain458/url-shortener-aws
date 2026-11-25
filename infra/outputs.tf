@@ -52,3 +52,8 @@ output "db_endpoint" {
   description = "Private address of the database."
   value       = aws_db_instance.main.address
 }
+
+output "github_deploy_role_arn" {
+  description = "Role that GitHub Actions assumes to deploy. Store it as the AWS_DEPLOY_ROLE_ARN repository secret."
+  value       = aws_iam_role.github_deploy.arn
+}

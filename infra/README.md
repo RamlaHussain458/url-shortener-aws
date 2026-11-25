@@ -51,11 +51,13 @@ only the expensive parts at the end of a session and bring them back at the star
 
 ```powershell
 # End of a session: remove the server, its IP address and the database
-terraform destroy -target=aws_instance.web -target=aws_eip.web -target=aws_db_instance.main
+terraform destroy -target="aws_instance.web" -target="aws_eip.web" -target="aws_db_instance.main"
 
 # Start of the next session: recreate whatever is missing
 terraform apply
 ```
+
+The quotes around each `-target` value are required in PowerShell. Without them it splits the name at the dot and fails with "Too many command line arguments".
 
 At the very end of the project, run a plain `terraform destroy` to remove everything. The state
 bucket is not managed by Terraform and has to be deleted by hand.

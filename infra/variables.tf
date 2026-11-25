@@ -63,3 +63,15 @@ variable "ecr_images_to_keep" {
   type        = number
   default     = 5
 }
+
+variable "github_repository" {
+  description = "GitHub repository (owner/name) that is allowed to deploy."
+  type        = string
+  default     = "RamlaHussain458/url-shortener-aws"
+}
+
+variable "create_github_oidc_provider" {
+  description = "Create the GitHub identity provider. Set to false if the AWS account already has one."
+  type        = bool
+  default     = true
+}

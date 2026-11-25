@@ -75,3 +75,9 @@ variable "create_github_oidc_provider" {
   type        = bool
   default     = true
 }
+
+variable "github_oidc_subject_repo" {
+  description = "How GitHub names this repository inside the OIDC token: owner@ownerId/repo@repoId. Copy it from the sub claim printed by the debug step."
+  type        = string
+  default     = "RamlaHussain458@185750586/url-shortener-aws@1466680013"
+}

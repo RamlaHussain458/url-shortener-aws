@@ -58,3 +58,11 @@ jobs:
       # No AWS credentials are needed: the backend is skipped and only the configuration is checked.
       - run: terraform init -backend=false
       - run: terraform validate
+
+  scripts:
+    name: Shell script lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # shellcheck is preinstalled on GitHub's Ubuntu runners.
+      - run: shellcheck deploy/deploy.sh infra/user_data.sh

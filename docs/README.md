@@ -3,6 +3,7 @@
 | Document | What it covers |
 | --- | --- |
 | [Development log](development-log.md) | Problems met while building the project and the changes made to fix them |
+| [Deployment runbook](deployment.md) | How the application is deployed to AWS by hand |
 | [Architecture decision records](adr/) | Short records explaining why important choices were made |
 
 ## Architecture decision records
@@ -17,5 +18,6 @@
 | [0006](adr/0006-terraform-remote-state-in-s3.md) | Terraform remote state in S3 with native locking | Accepted |
 | [0007](adr/0007-network-design.md) | Public web subnet, private database subnets, no NAT gateway | Accepted |
 | [0008](adr/0008-compute-database-and-secrets.md) | Compute, database and secrets choices | Accepted |
+| [0009](adr/0009-deployment-with-compose-on-ec2.md) | Deploy with Docker Compose on EC2, images from ECR | Accepted |
 
 The architecture diagrams are in the main [README](../README.md).

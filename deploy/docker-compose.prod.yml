@@ -1,5 +1,3 @@
-# Production stack on the web server. The images come from ECR and the database is RDS,
-# so there is no database service here. Values come from the .env file that deploy.sh writes.
 services:
   app:
     image: ${ECR_REGISTRY:?}/url-shortener-backend:${IMAGE_TAG:?}
@@ -23,10 +21,13 @@ services:
     security_opt:
       - no-new-privileges:true
     logging:
-      driver: json-file
+      driver: awslogs
       options:
-        max-size: "10m"
-        max-file: "3"
+        awslogs-region: ap-south-1
+        awslogs-group: /url-shortener/app
+        tag: "{{.Name}}"
+        mode: non-blocking
+        max-buffer-size: 4m
 
   web:
     image: ${ECR_REGISTRY:?}/url-shortener-web:${IMAGE_TAG:?}
@@ -40,7 +41,10 @@ services:
     security_opt:
       - no-new-privileges:true
     logging:
-      driver: json-file
+      driver: awslogs
       options:
-        max-size: "10m"
-        max-file: "3"
+        awslogs-region: ap-south-1
+        awslogs-group: /url-shortener/web
+        tag: "{{.Name}}"
+        mode: non-blocking
+        max-buffer-size: 4m

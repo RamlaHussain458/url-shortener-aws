@@ -20,5 +20,6 @@
 | [0008](adr/0008-compute-database-and-secrets.md) | Compute, database and secrets choices | Accepted |
 | [0009](adr/0009-deployment-with-compose-on-ec2.md) | Deploy with Docker Compose on EC2, images from ECR | Accepted |
 | [0010](adr/0010-github-actions-deploy-with-oidc.md) | Deploy from GitHub Actions with OIDC and Systems Manager | Accepted |
+| [0011](adr/0011-cloudwatch-monitoring.md) | Monitoring with CloudWatch | Accepted |
 
 The architecture diagrams are in the main [README](../README.md).

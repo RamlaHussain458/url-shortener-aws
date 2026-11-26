@@ -1,0 +1,130 @@
+{
+  "widgets": [
+    {
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 2,
+      "properties": {
+        "markdown": "# URL shortener\nHealth of the web server, the database and the application."
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 2,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Web server CPU (%)",
+        "region": "${region}",
+        "view": "timeSeries",
+        "stat": "Average",
+        "period": 300,
+        "metrics": [
+          ["AWS/EC2", "CPUUtilization", "InstanceId", "${instance_id}"]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 2,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Web server network (bytes)",
+        "region": "${region}",
+        "view": "timeSeries",
+        "stat": "Sum",
+        "period": 300,
+        "metrics": [
+          ["AWS/EC2", "NetworkIn", "InstanceId", "${instance_id}"],
+          ["AWS/EC2", "NetworkOut", "InstanceId", "${instance_id}"]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 8,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Database CPU (%)",
+        "region": "${region}",
+        "view": "timeSeries",
+        "stat": "Average",
+        "period": 300,
+        "metrics": [
+          ["AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", "${db_identifier}"]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 8,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Database connections",
+        "region": "${region}",
+        "view": "timeSeries",
+        "stat": "Maximum",
+        "period": 300,
+        "metrics": [
+          ["AWS/RDS", "DatabaseConnections", "DBInstanceIdentifier", "${db_identifier}"]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 14,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Database free storage (bytes)",
+        "region": "${region}",
+        "view": "timeSeries",
+        "stat": "Minimum",
+        "period": 300,
+        "metrics": [
+          ["AWS/RDS", "FreeStorageSpace", "DBInstanceIdentifier", "${db_identifier}"]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 14,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Application ERROR log lines",
+        "region": "${region}",
+        "view": "timeSeries",
+        "stat": "Sum",
+        "period": 300,
+        "metrics": [
+          ["UrlShortener", "AppErrors"]
+        ]
+      }
+    },
+    {
+      "type": "log",
+      "x": 0,
+      "y": 20,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "title": "Latest application log lines",
+        "region": "${region}",
+        "view": "table",
+        "query": "SOURCE '${app_log_group}' | fields @timestamp, @message | sort @timestamp desc | limit 20"
+      }
+    }
+  ]
+}

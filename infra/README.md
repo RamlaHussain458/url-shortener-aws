@@ -61,3 +61,7 @@ The quotes around each `-target` value are required in PowerShell. Without them 
 
 At the very end of the project, run a plain `terraform destroy` to remove everything. The state
 bucket is not managed by Terraform and has to be deleted by hand.
+
+## Settings that are not committed
+
+`alert_email` has no default value. Copy `terraform.tfvars.example` to `terraform.tfvars` and put your own address in it. `terraform.tfvars` is ignored by Git.

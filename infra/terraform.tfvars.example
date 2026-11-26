@@ -1,0 +1,3 @@
+# Copy this file to terraform.tfvars and put your own email address in it.
+# terraform.tfvars is ignored by Git, so your address is not published.
+alert_email = "you@example.com"

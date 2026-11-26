@@ -50,5 +50,6 @@ If no server is running, the workflow still builds and pushes the images, then s
 
 - The site is served over HTTP only. HTTPS needs a domain name and a certificate, and is a possible later improvement.
 - No SSH port is open. Shell access uses Session Manager.
+- Container logs are sent to CloudWatch Logs (see [monitoring.md](monitoring.md)). Apply Terraform before the first deployment that uses them, because the server role needs permission to write to the log groups.
 - Database settings are written to `/opt/url-shortener/.env` on the server, readable by root only. They are never stored in Git.
 - The pipeline needs one repository secret, `AWS_DEPLOY_ROLE_ARN`, holding the ARN of the role created by Terraform (`terraform output github_deploy_role_arn`).

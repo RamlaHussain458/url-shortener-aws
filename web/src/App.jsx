@@ -50,12 +50,41 @@ function messageFor(error) {
 }
 
 async function copyToClipboard(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    return false;
-  }
+    // First, try the modern Clipboard API.
+    if (navigator.clipboard && window.isSecureContext) {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch {
+            // If the modern API fails, try the fallback.
+        }
+    }
+
+    // Fallback for browsers where Clipboard API is unavailable.
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.setAttribute('readonly', '');
+
+    // Keep the textarea out of sight without removing it from the document.
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-9999px';
+    textArea.style.top = '0';
+
+    document.body.appendChild(textArea);
+    textArea.select();
+    textArea.setSelectionRange(0, textArea.value.length);
+
+    let copied = false;
+
+    try {
+        copied = document.execCommand('copy');
+    } catch {
+        copied = false;
+    } finally {
+        document.body.removeChild(textArea);
+    }
+
+    return copied;
 }
 
 export default function App() {

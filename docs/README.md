@@ -2,9 +2,12 @@
 
 | Document | What it covers |
 | --- | --- |
+| [AWS deployment](aws-deployment.md) | How the system runs on AWS: components, deploy flow, security, monitoring, cost control, limitations and evidence |
+| [Deployment runbook](deployment.md) | Commands to start, deploy and stop the infrastructure, with troubleshooting |
+| [Monitoring](monitoring.md) | Logs, alarms and the dashboard |
 | [Development log](development-log.md) | Problems met while building the project and the changes made to fix them |
-| [Deployment runbook](deployment.md) | How the application is deployed to AWS, by pipeline or by hand |
 | [Architecture decision records](adr/) | Short records explaining why important choices were made |
+| [Architecture diagram](architecture.drawio) | Editable source of the AWS diagram, exported as [images/architecture.png](images/architecture.png). Open it at diagrams.net |
 
 ## Architecture decision records
 
@@ -12,7 +15,7 @@
 | --- | --- | --- |
 | [0001](adr/0001-random-short-codes.md) | Random Base62 short codes | Accepted |
 | [0002](adr/0002-redirect-with-302.md) | Redirect with 302, not 301 | Accepted |
-| [0003](adr/0003-free-tier-aws-architecture.md) | Low-cost AWS architecture for a student account | Accepted, implementation planned |
+| [0003](adr/0003-free-tier-aws-architecture.md) | Low-cost AWS architecture for a student account | Accepted and implemented |
 | [0004](adr/0004-singleton-testcontainer.md) | One shared MySQL Testcontainer for all integration tests | Accepted |
 | [0005](adr/0005-frontend-behind-nginx.md) | React frontend served by nginx with a reverse proxy | Accepted |
 | [0006](adr/0006-terraform-remote-state-in-s3.md) | Terraform remote state in S3 with native locking | Accepted |
@@ -22,4 +25,4 @@
 | [0010](adr/0010-github-actions-deploy-with-oidc.md) | Deploy from GitHub Actions with OIDC and Systems Manager | Accepted |
 | [0011](adr/0011-cloudwatch-monitoring.md) | Monitoring with CloudWatch | Accepted |
 
-The architecture diagrams are in the main [README](../README.md).
+The AWS architecture diagram is shown in the main [README](../README.md) and explained in [AWS deployment](aws-deployment.md).

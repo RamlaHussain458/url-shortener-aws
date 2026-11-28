@@ -1,6 +1,6 @@
 # Monitoring
 
-Monitoring uses Amazon CloudWatch, which needs no extra servers and no changes to the application.
+Monitoring uses Amazon CloudWatch, which needs no extra servers and no changes to the application. For how it fits into the whole system, see [AWS deployment](aws-deployment.md).
 
 ## What is collected
 
@@ -13,7 +13,7 @@ Monitoring uses Amazon CloudWatch, which needs no extra servers and no changes t
 
 ## Alarms
 
-All alarms email the address set in `terraform.tfvars` through an SNS topic. The subscription must be confirmed once, using the link in the first email from AWS.
+All alarms email the address set in `terraform.tfvars` through an SNS topic, both when an alarm fires and when it returns to normal. The subscription must be confirmed once, using the link in the first email from AWS.
 
 | Alarm | Triggers when |
 | --- | --- |
@@ -23,18 +23,20 @@ All alarms email the address set in `terraform.tfvars` through an SNS topic. The
 | `url-shortener-db-storage-low` | The database has less than 2 GiB of free storage |
 | `url-shortener-app-errors` | The application logs 5 or more ERROR lines within 5 minutes |
 
-The server and database alarms and the dashboard are removed together with the server and database, and recreated by the next `terraform apply`.
+Missing data counts as "not breaching", so an alarm does not fire just because the server was destroyed.
+
+The four alarms that point at the server or database (every alarm except `url-shortener-app-errors`) and the dashboard are removed together with the server and database, and recreated by the next `terraform apply`. The SNS topic and its confirmed subscription stay.
 
 ## Dashboard
 
-The dashboard `url-shortener` (CloudWatch, Dashboards) shows server and database health, the error count and the latest application log lines.
+The dashboard `url-shortener` (CloudWatch, Dashboards) shows server CPU and network, database CPU, connections and free storage, the application error count and the latest application log lines.
 
 ## Try it
 
 - **Logs:** CloudWatch, Log groups, `/url-shortener/app`, open the newest log stream.
-- **Alarm email:** the command below puts an alarm into the ALARM state, which sends the email. It returns to OK by itself within a few minutes.
+- **Alarm email:** the command below puts an alarm into the ALARM state, which sends the email. It returns to OK by itself within a few minutes, and you get a second email when it does.
   ```
-  aws cloudwatch set-alarm-state --alarm-name "url-shortener-app-errors" --state-value ALARM --state-reason "Testing the email notification"
+  aws cloudwatch set-alarm-state --region ap-south-1 --alarm-name "url-shortener-app-errors" --state-value ALARM --state-reason "Testing the email notification"
   ```
 
 ## Limits
